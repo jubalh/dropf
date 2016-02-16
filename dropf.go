@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 const indexPage = `
@@ -18,10 +20,20 @@ const indexPage = `
 </form>
 `
 
+const userspacePage = `
+<h1>upload a file</h1>
+<form enctype="multipart/form-data" action="/upload" method="post">
+      <input type="file" name="file" id="file"/>
+      <input type="submit" value="upload" />
+</form>
+`
+
+// indexHandler serves the index Page where a user can login.
 func indexHandler(response http.ResponseWriter, request *http.Request) {
 	fmt.Fprintf(response, indexPage)
 }
 
+// loginHandler is used to log the user in.
 func loginHandler(response http.ResponseWriter, request *http.Request) {
 	name := request.FormValue("name")
 	password := request.FormValue("password")
@@ -32,14 +44,45 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, target, 302)
 }
 
+// userspaceHandler shows the users private home area.
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
-	fmt.Fprintf(response, "good")
+	fmt.Fprintf(response, userspacePage)
+}
+
+// uploadHandler uploads the file.
+func uploadHandler(response http.ResponseWriter, request *http.Request) {
+	if request.Method == "POST" {
+		file, header, err := request.FormFile("file")
+		if err != nil {
+			fmt.Fprintln(response, err) //TODO: to log
+			return
+		}
+		defer file.Close()
+
+		output, err := os.Create("/tmp/thefile") //TODO: read config where to save
+		if err != nil {
+			fmt.Fprintln(response, err) //TODO: to log, check for privileges
+			return
+		}
+		defer output.Close()
+
+		// write the content from POST to the file
+		_, err = io.Copy(output, file)
+		if err != nil {
+			fmt.Fprintln(response, err)
+		}
+
+		fmt.Fprintf(response, "File uploaded successfully: ")
+		fmt.Fprintf(response, header.Filename)
+	}
 }
 
 func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/userspace", userspaceHandler)
+	http.HandleFunc("/upload", uploadHandler)
+
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
