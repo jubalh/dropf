@@ -54,26 +54,30 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 	if request.Method == "POST" {
 		file, header, err := request.FormFile("file")
 		if err != nil {
-			fmt.Fprintln(response, err) //TODO: to log
+			fmt.Fprintln(response, "Something went wrong!")
+			fmt.Println(err)
 			return
 		}
 		defer file.Close()
 
-		output, err := os.Create("/tmp/thefile") //TODO: read config where to save
+		os.Mkdir("files", 0660)
+		output, err := os.Create("files/" + header.Filename) //TODO: read config where to save
 		if err != nil {
-			fmt.Fprintln(response, err) //TODO: to log, check for privileges
+			fmt.Fprintln(response, "Something went wrong!")
+			fmt.Println(err)
 			return
 		}
 		defer output.Close()
 
-		// write the content from POST to the file
 		_, err = io.Copy(output, file)
 		if err != nil {
 			fmt.Fprintln(response, err)
+			fmt.Println(err)
 		}
 
 		fmt.Fprintf(response, "File uploaded successfully: ")
 		fmt.Fprintf(response, header.Filename)
+		fmt.Println("Uploaded file:", header.Filename)
 	}
 }
 
