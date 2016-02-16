@@ -2,35 +2,25 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 )
 
-const indexPage = `
-<h1>dropf<h2>
-<p>Drop your files here</p>
-<form method="post" action="/login">
-    <label for="name">User name</label>
-    <input type="text" id="name" name="name">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password">
-    <button type="submit">Login</button>
-</form>
-`
+func executeTemplate(templateName string, writer http.ResponseWriter) {
+	t, err := template.ParseFiles("templates/" + templateName)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 
-const userspacePage = `
-<h1>upload a file</h1>
-<form enctype="multipart/form-data" action="/upload" method="post">
-      <input type="file" name="file" id="file"/>
-      <input type="submit" value="upload" />
-</form>
-`
+	t.Execute(writer, nil)
+}
 
 // indexHandler serves the index Page where a user can login.
 func indexHandler(response http.ResponseWriter, request *http.Request) {
-	fmt.Fprintf(response, indexPage)
+	executeTemplate("index.html", response)
 }
 
 // loginHandler is used to log the user in.
@@ -46,7 +36,7 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 
 // userspaceHandler shows the users private home area.
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
-	fmt.Fprintf(response, userspacePage)
+	executeTemplate("userspace.html", response)
 }
 
 // uploadHandler uploads the file.
@@ -55,7 +45,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		file, header, err := request.FormFile("file")
 		if err != nil {
 			fmt.Fprintln(response, "Something went wrong!")
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 		defer file.Close()
@@ -64,7 +54,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		output, err := os.Create("files/" + header.Filename) //TODO: read config where to save
 		if err != nil {
 			fmt.Fprintln(response, "Something went wrong!")
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 		defer output.Close()
@@ -72,7 +62,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		_, err = io.Copy(output, file)
 		if err != nil {
 			fmt.Fprintln(response, err)
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 		}
 
 		fmt.Fprintf(response, "File uploaded successfully: ")
