@@ -3,17 +3,64 @@
   <head>
     <meta charset="utf-8">
   </head>
-  <body>
+  <body style="width: 800px;">
 
-    <h1>dropf<h2>
-    <p>Drop your files here</p>
-    <form method="post" action="/login">
-      <label for="name">User name</label>
-      <input type="text" id="name" name="name">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password">
-      <button type="submit">Login</button>
-    </form>
+  <style>
+    .header{
+      width: 100%;
+      background-color: #E0EBF5;
+    }
+
+    .Container {
+      padding: 10px;
+      padding-left: 0px;
+    }
+
+    .leftContainer {
+      /*width: 20%;   */
+      float: left;
+      margin-right: 50px;
+    }
+
+    .rightContainer {
+      /*width: 80%;*/
+    }
+
+    button {
+      background-color: #E0EBF5;
+      border: none;
+      padding: 10px 32px;
+  }
+  </style>
+
+  <div class="header">
+    <h1>dropf</h1>
+  </div>
+
+  <div class="content">
+
+    <div class="Container leftContainer">
+      <img src="/static/images/dropf.png" style="height: 120px">
+    </div>
+
+    <div class="Container rightContainer">
+      <b>Drop your files</b>
+    </div>
+
+    <div class="login">
+      <form method="post" action="/login">
+        <label for="name">Username:</label>
+        <input type="text" id="name" name="name">
+        </br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        </br>
+        </br>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+  </div>
 
   </body>
 </html>

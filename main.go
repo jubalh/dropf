@@ -18,6 +18,7 @@ func main() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/userspace", userspaceHandler)
 	http.HandleFunc("/upload", uploadHandler)
+	http.HandleFunc("/static/", staticHandler)
 
 	err = http.ListenAndServe(":9090", nil)
 	if err != nil {

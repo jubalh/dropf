@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // executeTemplate loads a basic HTML file and writes it to a writer.
@@ -70,5 +71,12 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintf(response, "File uploaded successfully: ")
 		fmt.Fprintf(response, header.Filename)
 		fmt.Println("Uploaded file:", header.Filename)
+	}
+}
+
+// staticHandler takes care of images and other static files
+func staticHandler(response http.ResponseWriter, request *http.Request) {
+	if strings.Contains(request.URL.Path, ".png") {
+		http.ServeFile(response, request, request.URL.Path[1:])
 	}
 }
