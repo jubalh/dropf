@@ -38,7 +38,11 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 			if username.Password == password {
 				//TODO: create cookie
 				target = "/userspace"
+			} else {
+				fmt.Println("Failed login for user: ", name)
 			}
+		} else {
+			fmt.Println("Failed login: ", name)
 		}
 	}
 
