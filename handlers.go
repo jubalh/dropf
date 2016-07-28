@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -53,8 +54,8 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		}
 		defer file.Close()
 
-		os.Mkdir("files", 0660)
-		output, err := os.Create("files/" + header.Filename) //TODO: read config where to save
+		os.Mkdir("files", 0750)
+		output, err := os.Create(filepath.Join("files", header.Filename)) //TODO: read config where to save
 		if err != nil {
 			fmt.Fprintln(response, "Something went wrong!")
 			fmt.Fprintln(os.Stderr, err)
