@@ -10,13 +10,11 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-var Config = Configuration{}
-
 type User struct {
 	Name, Password string
 }
 
-type Configuration struct {
+var Config struct {
 	Path  string
 	Users []User
 }
