@@ -55,6 +55,8 @@ func main() {
 	}
 	defer db.Close()
 
+	InitSessionStore()
+
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/userspace", userspaceHandler)

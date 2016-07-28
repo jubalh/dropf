@@ -36,7 +36,14 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	for _, username := range Config.Users {
 		if username.Name == name {
 			if username.Password == password {
-				//TODO: create cookie
+				id := CreateSession(username.Name)
+
+				cookie := &http.Cookie{
+					Name:  "dropf",
+					Value: id,
+				}
+
+				http.SetCookie(response, cookie)
 				target = "/userspace"
 			} else {
 				fmt.Println("Failed login for user: ", name)
@@ -51,6 +58,22 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 
 // userspaceHandler shows the users private home area.
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
+	cookie, err := request.Cookie("dropf")
+	if err != nil {
+		fmt.Println("Debug: not logged in")
+		http.Redirect(response, request, "/", 302)
+		return
+	}
+
+	username, err := GetUsername(cookie.Value)
+	if err != nil {
+		fmt.Println("Debug: ", err)
+		http.Redirect(response, request, "/", 302)
+		return
+	}
+
+	fmt.Println("Debug: Logged in as:", username)
+
 	executeTemplate("userspace.html", response)
 }
 
