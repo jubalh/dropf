@@ -32,9 +32,16 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	name := request.FormValue("name")
 	password := request.FormValue("password")
 	target := "/"
-	if name == "gandalf" && password == "mellon" {
-		target = "/userspace"
+
+	for _, username := range Config.Users {
+		if username.Name == name {
+			if username.Password == password {
+				//TODO: create cookie
+				target = "/userspace"
+			}
+		}
 	}
+
 	http.Redirect(response, request, target, 302)
 }
 

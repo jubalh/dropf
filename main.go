@@ -12,8 +12,13 @@ import (
 
 var Config = Configuration{}
 
+type User struct {
+	Name, Password string
+}
+
 type Configuration struct {
-	Path string
+	Path  string
+	Users []User
 }
 
 func readConfig() error {
@@ -23,6 +28,7 @@ func readConfig() error {
 		return err
 	}
 	defer f.Close()
+
 	decoder := json.NewDecoder(f)
 	err = decoder.Decode(&Config)
 	if err != nil {
