@@ -54,8 +54,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		}
 		defer file.Close()
 
-		os.Mkdir("files", 0750)
-		output, err := os.Create(filepath.Join("files", header.Filename)) //TODO: read config where to save
+		output, err := os.Create(filepath.Join(Config.Path, header.Filename))
 		if err != nil {
 			fmt.Fprintln(response, "Something went wrong!")
 			fmt.Fprintln(os.Stderr, err)

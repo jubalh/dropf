@@ -1,13 +1,50 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/boltdb/bolt"
 )
 
+var Config = Configuration{}
+
+type Configuration struct {
+	Path string
+}
+
+func readConfig() error {
+	f, err := os.Open("config.json")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Can not read configuration file: ", err)
+		return err
+	}
+	defer f.Close()
+	decoder := json.NewDecoder(f)
+	err = decoder.Decode(&Config)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Can not decode json configuration file: ", err)
+		return err
+	}
+	return nil
+}
+
 func main() {
+	err := readConfig()
+	if err != nil {
+		os.Exit(1)
+	}
+
+	// Create directory where files will be saved
+	if Config.Path == "" {
+		fmt.Println("'Path' is not defined in configuration. Fallback to 'files'")
+		Config.Path = "files"
+	}
+	os.Mkdir(Config.Path, 0750)
+
 	db, err := bolt.Open("files.db", 0644, nil)
 	if err != nil {
 		log.Fatal(err)
