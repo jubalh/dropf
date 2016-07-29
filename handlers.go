@@ -124,6 +124,13 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
+	store := BoltStore{}
+	f := File{ Metadata{
+	Name: header.Filename,
+}}
+	store.Store(
+
+
 	fmt.Fprintf(response, "File uploaded successfully: ")
 	fmt.Fprintf(response, header.Filename)
 	fmt.Println("Uploaded file:", header.Filename)

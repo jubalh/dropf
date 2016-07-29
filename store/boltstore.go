@@ -4,14 +4,19 @@
 // and will be available for users under a certain link.
 // We store the connection between that link to the actual path of the
 // file in a Bolt database.
-package main
+package store
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/boltdb/bolt"
+	"github.com/satori/go.uuid"
 )
+
+type BoltStore struct {
+	Name string
+}
 
 // updateItem updates an item in the Bolt database.
 func updateItem(db bolt.DB, key string, value string) {
@@ -57,4 +62,7 @@ func removeItem(db bolt.DB, key string) (err error) {
 		return err
 	})
 	return
+}
+
+func (BoltStore) Store(file *File) (uuid.UUID, error) {
 }
