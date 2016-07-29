@@ -91,7 +91,7 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 // uploadHandler uploads the file.
 func uploadHandler(response http.ResponseWriter, request *http.Request) {
-	_, err := GetSessionId(request)
+	id, err := GetSessionId(request)
 	if err != nil {
 		http.Redirect(response, request, "/", 302)
 		return
@@ -110,7 +110,15 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 	}
 	defer file.Close()
 
-	output, err := os.Create(filepath.Join(Config.Path, header.Filename))
+	username, err := GetUsername(id)
+	// shouldnt happen but always check errors
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+
+	os.Mkdir(filepath.Join(Config.Path, username), 0750)
+
+	output, err := os.Create(filepath.Join(Config.Path, username, header.Filename))
 	if err != nil {
 		fmt.Fprintln(response, "Something went wrong!")
 		fmt.Fprintln(os.Stderr, err)
