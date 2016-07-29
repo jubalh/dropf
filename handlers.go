@@ -61,6 +61,14 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, target, 302)
 }
 
+func logoutHandler(response http.ResponseWriter, request *http.Request) {
+	id, err := GetSessionId(request)
+	if err == nil {
+		DestroySession(id)
+	}
+	http.Redirect(response, request, "/", 302)
+}
+
 // userspaceHandler shows the users private home area.
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)

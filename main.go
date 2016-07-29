@@ -59,6 +59,7 @@ func main() {
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/userspace", userspaceHandler)
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/static/", staticHandler)

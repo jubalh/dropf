@@ -8,11 +8,6 @@ import (
 	"net/http"
 )
 
-type Session struct {
-	Id       string
-	Username string
-}
-
 var SessionStore map[string]string
 
 const CookieName string = "dropf"
@@ -29,6 +24,10 @@ func CreateSession(username string) (id string) {
 	SessionStore[id] = username
 
 	return id
+}
+
+func DestroySession(id string) {
+	delete(SessionStore, id)
 }
 
 func GetUsername(id string) (string, error) {
