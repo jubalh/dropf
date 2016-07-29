@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -13,6 +14,8 @@ type Session struct {
 }
 
 var SessionStore map[string]string
+
+const CookieName string = "dropf"
 
 func InitSessionStore() {
 	SessionStore = make(map[string]string)
@@ -36,12 +39,14 @@ func GetUsername(id string) (string, error) {
 	}
 }
 
-func SessionExistsForRequest(r *http.Request) bool {
-	cookie, err := r.Cookie("dropf")
-	if err == nil {
-		if SessionStore[cookie.Value] == "" {
-			return true
-		}
+func GetSessionId(r *http.Request) (id string, err error) {
+	cookie, err := r.Cookie(CookieName)
+	if err != nil {
+		return "", fmt.Errorf("No cookie named: %s", CookieName)
 	}
-	return false
+
+	if SessionStore[cookie.Value] == "" {
+		return "", fmt.Errorf("No session for cookie: %s", cookie.Value)
+	}
+	return cookie.Value, nil
 }
