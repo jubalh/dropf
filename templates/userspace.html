@@ -5,15 +5,25 @@
   </head>
   <body>
 
+  <p>Welcome, {{ .Username }}</p>
   <form method="post" action="/logout">
     <button type="submit">Logout</button>
   </form>
 
-  <h1>upload a file</h1>
+  <h1>Upload a file</h1>
   <form enctype="multipart/form-data" action="/upload" method="post">
     <input type="file" name="file" id="file"/>
     <input type="submit" value="upload" />
   </form>
+
+  {{ if .Files }}
+  <h1>List of files</h1>
+  <ul>
+  {{ range .Files }}
+  <li>{{ .Name }}</li>
+  {{ end }}
+  </ul>
+  {{ end }}
 
   </body>
 </html>

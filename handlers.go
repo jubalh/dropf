@@ -5,21 +5,34 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
+// Hols information about the uploaded files
+type File struct {
+	Name string
+}
+
+// A Filler type to fill in the template.
+// It holds the infos that one wants in the userspace
+type Filler struct {
+	Username string
+	Files    []File
+}
+
 // executeTemplate loads a basic HTML file and writes it to a writer.
 // Which usually should be a http.ResponseWriter.
-func executeTemplate(templateName string, writer http.ResponseWriter) {
+func executeTemplate(templateName string, writer http.ResponseWriter, filler *Filler) {
 	t, err := template.ParseFiles("templates/" + templateName)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	t.Execute(writer, nil)
+	t.Execute(writer, filler)
 }
 
 // indexHandler serves the index Page where a user can login.
@@ -29,7 +42,7 @@ func indexHandler(response http.ResponseWriter, request *http.Request) {
 		http.Redirect(response, request, "/userspace", 302)
 		return
 	}
-	executeTemplate("index.html", response)
+	executeTemplate("index.html", response, nil)
 }
 
 // loginHandler is used to log the user in.
@@ -86,7 +99,20 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 	fmt.Println("Debug: Logged in as:", username)
 
-	executeTemplate("userspace.html", response)
+	f := []File{}
+
+	files, err := ioutil.ReadDir(filepath.Join(Config.Path, username))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "User does not have uploaded any files yet")
+	}
+
+	for _, file := range files {
+		newf := File{Name: file.Name()}
+		f = append(f, newf)
+	}
+	filler := &Filler{Files: f, Username: username}
+
+	executeTemplate("userspace.html", response, filler)
 }
 
 // uploadHandler uploads the file.
