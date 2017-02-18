@@ -18,11 +18,20 @@
 
   {{ if .Files }}
   <h1>List of files</h1>
-  <ul>
+  <table>
+	  <tr>
+		  <th>Name</th>
+		  <th>Size</th>
+		  <th>Date</th>
+	  </tr>
   {{ range .Files }}
-  <li>{{ .Name }}</li>
+	  <tr>
+		  <td>{{ .Name }} </td>
+		  <td>{{ .Size }} </td>
+		  <td>{{ .ModTime }} </td>
+	  </tr>
   {{ end }}
-  </ul>
+  </table>
   {{ end }}
 
   </body>

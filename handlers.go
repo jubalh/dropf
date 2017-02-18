@@ -14,7 +14,9 @@ import (
 
 // Hols information about the uploaded files
 type File struct {
-	Name string
+	Name    string
+	Size    int64
+	ModTime string
 }
 
 // A Filler type to fill in the template.
@@ -107,7 +109,8 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 	}
 
 	for _, file := range files {
-		newf := File{Name: file.Name()}
+		newf := File{Name: file.Name(), Size: file.Size()}
+		newf.ModTime = file.ModTime().Format("2006-01-02 10:10")
 		f = append(f, newf)
 	}
 	filler := &Filler{Files: f, Username: username}
