@@ -167,8 +167,11 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 }
 
 // staticHandler takes care of images and other static files
+// like user uploaded files.
 func staticHandler(response http.ResponseWriter, request *http.Request) {
-	if strings.Contains(request.URL.Path, ".png") {
+	if strings.Contains(request.URL.Path, ".png") ||
+		strings.Contains(request.URL.Path, "/files/") {
+		fmt.Println(request.URL.Path[1:])
 		http.ServeFile(response, request, request.URL.Path[1:])
 	}
 }

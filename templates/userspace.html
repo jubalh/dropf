@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
 
-  <p>Welcome, {{ .Username }}</p>
-  <form method="post" action="/logout">
-    <button type="submit">Logout</button>
-  </form>
+		<p>Welcome, {{ .Username }}</p>
+		<form method="post" action="/logout">
+			<button type="submit">Logout</button>
+		</form>
 
-  <h1>Upload a file</h1>
-  <form enctype="multipart/form-data" action="/upload" method="post">
-    <input type="file" name="file" id="file"/>
-    <input type="submit" value="upload" />
-  </form>
+		<h1>Upload a file</h1>
+		<form enctype="multipart/form-data" action="/upload" method="post">
+			<input type="file" name="file" id="file"/>
+			<input type="submit" value="upload" />
+		</form>
 
-  {{ if .Files }}
-  <h1>List of files</h1>
-  <table>
-	  <tr>
-		  <th>Name</th>
-		  <th>Size</th>
-		  <th>Date</th>
-	  </tr>
-  {{ range .Files }}
-	  <tr>
-		  <td>{{ .Name }} </td>
-		  <td>{{ .Size }} </td>
-		  <td>{{ .ModTime }} </td>
-	  </tr>
-  {{ end }}
-  </table>
-  {{ end }}
+		{{ if .Files }}
+		<h1>List of files</h1>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Size</th>
+				<th>Date</th>
+			</tr>
+			{{ range .Files }}
+			<tr>
+				<td><a href="/files/{{ $.Username }}/{{ .Name }}"> {{ .Name }} </a></td>
+				<td>{{ .Size }} </td>
+				<td>{{ .ModTime }} </td>
+			</tr>
+			{{ end }}
+		</table>
+		{{ end }}
 
-  </body>
+	</body>
 </html>
