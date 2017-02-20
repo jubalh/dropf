@@ -161,9 +161,8 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	fmt.Fprintf(response, "File uploaded successfully: ")
-	fmt.Fprintf(response, header.Filename)
 	fmt.Println("Uploaded file:", header.Filename)
+	http.Redirect(response, request, "/userspace", 302)
 }
 
 // staticHandler takes care of images and other static files
