@@ -23,12 +23,14 @@
 				<th>Name</th>
 				<th>Size</th>
 				<th>Date</th>
+				<th></th>
 			</tr>
 			{{ range .Files }}
 			<tr>
 				<td><a href="/files/{{ $.Username }}/{{ .Name }}"> {{ .Name }} </a></td>
 				<td>{{ .Size }} </td>
 				<td>{{ .ModTime }} </td>
+				<td><a href="/filesdelete/{{ $.Username }}/{{ .Name }}"> Delete </a></td>
 			</tr>
 			{{ end }}
 		</table>

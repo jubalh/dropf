@@ -175,3 +175,13 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 		http.ServeFile(response, request, request.URL.Path[1:])
 	}
 }
+
+func testHandler(response http.ResponseWriter, request *http.Request) {
+	// request like: /filesdelete/username/filename
+	s := request.URL.String()
+	file := s[strings.Index(s[1:], "/")+2:]
+
+	os.Remove("files/" + file)
+
+	http.Redirect(response, request, "/userspace", 302)
+}

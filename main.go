@@ -64,6 +64,7 @@ func main() {
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/static/", staticHandler)
 	http.HandleFunc("/files/", staticHandler)
+	http.HandleFunc("/filesdelete/", testHandler)
 
 	err = http.ListenAndServe(":9090", nil)
 	if err != nil {
