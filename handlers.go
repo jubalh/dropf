@@ -177,8 +177,25 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 // View request: /files/view/username/filename
 // Delete request: /files/delete/username/filename
 func fileHandler(response http.ResponseWriter, request *http.Request) {
+	id, err := GetSessionId(request)
+	if err != nil {
+		fmt.Fprintln(response, err)
+		return
+	}
+	loggedin, err := GetUsername(id)
+	if err != nil {
+		fmt.Fprintln(response, err)
+		return
+	}
+	fmt.Println(loggedin)
+
 	if strings.Contains(request.URL.Path, "/file/view/") {
-		http.ServeFile(response, request, "files/"+request.URL.Path[11:])
+		req := request.URL.Path[11:]
+		if strings.Compare(req[0:len(loggedin)+1], loggedin+"/") == 0 {
+			http.ServeFile(response, request, "files/"+req)
+		} else {
+			http.Redirect(response, request, "/", 404)
+		}
 	} else if strings.Contains(request.URL.Path, "/file/delete/") {
 		file := request.URL.String()[13:]
 		fmt.Println(file)
