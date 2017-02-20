@@ -167,21 +167,25 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 }
 
 // staticHandler takes care of images and other static files
-// like user uploaded files.
 func staticHandler(response http.ResponseWriter, request *http.Request) {
-	if strings.Contains(request.URL.Path, ".png") ||
-		strings.Contains(request.URL.Path, "/files/") {
+	if strings.Contains(request.URL.Path, ".png") {
 		fmt.Println(request.URL.Path[1:])
 		http.ServeFile(response, request, request.URL.Path[1:])
 	}
 }
 
-func testHandler(response http.ResponseWriter, request *http.Request) {
-	// request like: /filesdelete/username/filename
-	s := request.URL.String()
-	file := s[strings.Index(s[1:], "/")+2:]
+// fileHandler takes care of getting/viewing or deleting a file
+// View request: /files/view/username/filename
+// Delete request: /files/delete/username/filename
+func fileHandler(response http.ResponseWriter, request *http.Request) {
+	if strings.Contains(request.URL.Path, "/file/view/") {
+		http.ServeFile(response, request, "files/"+request.URL.Path[11:])
+	} else if strings.Contains(request.URL.Path, "/file/delete/") {
+		file := request.URL.String()[13:]
+		fmt.Println(file)
 
-	os.Remove("files/" + file)
+		os.Remove("files/" + file)
 
-	http.Redirect(response, request, "/userspace", 302)
+		http.Redirect(response, request, "/userspace", 302)
+	}
 }

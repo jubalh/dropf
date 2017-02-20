@@ -63,8 +63,7 @@ func main() {
 	http.HandleFunc("/userspace", userspaceHandler)
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/static/", staticHandler)
-	http.HandleFunc("/files/", staticHandler)
-	http.HandleFunc("/filesdelete/", testHandler)
+	http.HandleFunc("/file/", fileHandler)
 
 	err = http.ListenAndServe(":9090", nil)
 	if err != nil {

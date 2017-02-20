@@ -27,10 +27,10 @@
 			</tr>
 			{{ range .Files }}
 			<tr>
-				<td><a href="/files/{{ $.Username }}/{{ .Name }}"> {{ .Name }} </a></td>
+				<td><a href="/file/view/{{ $.Username }}/{{ .Name }}"> {{ .Name }} </a></td>
 				<td>{{ .Size }} </td>
 				<td>{{ .ModTime }} </td>
-				<td><a href="/filesdelete/{{ $.Username }}/{{ .Name }}"> Delete </a></td>
+				<td><a href="/file/delete/{{ $.Username }}/{{ .Name }}"> Delete </a></td>
 			</tr>
 			{{ end }}
 		</table>
