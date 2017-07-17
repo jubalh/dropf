@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -174,20 +175,37 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 }
 
 // fileHandler takes care of getting/viewing or deleting a file
-// View request: /files/view/username/filename
-// Delete request: /files/delete/username/filename
+// View request: /file/view/username/filename
+// Delete request: /file/delete/username/filename
 func fileHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)
 	if err != nil {
+		// TODO redirect ?
+		http.Redirect(response, request, "/", 302)
 		fmt.Fprintln(response, err)
 		return
 	}
 	loggedin, err := GetUsername(id)
 	if err != nil {
+		// TODO redirect ?
 		fmt.Fprintln(response, err)
 		return
 	}
-	fmt.Println(loggedin)
+
+	r, err := regexp.Compile("^/file/(view|delete)/" + loggedin + "/")
+	if err != nil {
+		fmt.Println("ERROR regex: ")
+		return
+	}
+
+	if r.MatchString(request.URL.Path) == false {
+		fmt.Printf("UNAUTHORIZED: %s requires %s\n", loggedin, request.URL.Path)
+		// TODO redirect ?
+		http.Redirect(response, request, "/", 302)
+		return
+	}
+
+	fmt.Printf("%s requires %s\n", loggedin, request.URL.Path)
 
 	if strings.Contains(request.URL.Path, "/file/view/") {
 		req := request.URL.Path[11:]
