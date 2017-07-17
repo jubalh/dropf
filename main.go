@@ -11,12 +11,13 @@ import (
 )
 
 type User struct {
-	Name, Password string
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 var Config struct {
-	Path  string
-	Users []User
+	Path  string `json:"path"`
+	Users []User `json:"users"`
 }
 
 func readConfig() error {

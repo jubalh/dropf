@@ -1,10 +1,10 @@
 {
-	"Path": "files",
-	"Users":
+	"path": "files",
+	"users":
 	[
 		{
-			"Name": "gandalf",
-			"Password": "mellon"
+			"name": "gandalf",
+			"password": "mellon"
 		}
 	]
 }
