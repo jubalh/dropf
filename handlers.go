@@ -132,14 +132,6 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	file, header, err := request.FormFile("file")
-	if err != nil {
-		fmt.Fprintln(response, "Something went wrong!")
-		fmt.Fprintln(os.Stderr, err)
-		return
-	}
-	defer file.Close()
-
 	username, err := GetUsername(id)
 	// shouldnt happen but always check errors
 	if err != nil {
@@ -148,22 +140,35 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 
 	os.Mkdir(filepath.Join(Config.Path, username), 0750)
 
-	output, err := os.Create(filepath.Join(Config.Path, username, header.Filename))
-	if err != nil {
-		fmt.Fprintln(response, "Something went wrong!")
-		fmt.Fprintln(os.Stderr, err)
-		return
-	}
-	defer output.Close()
+	request.ParseMultipartForm(32 << 20)
 
-	_, err = io.Copy(output, file)
-	if err != nil {
-		fmt.Fprintln(response, err)
-		fmt.Fprintln(os.Stderr, err)
-	}
+	for _, fh := range request.MultipartForm.File["ufiles"] {
+		f, err := fh.Open()
+		if err != nil {
+			fmt.Fprintln(response, "Something went wrong!")
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
 
-	fmt.Println("Uploaded file:", header.Filename)
-	http.Redirect(response, request, "/userspace", 302)
+		defer f.Close()
+
+		output, err := os.Create(filepath.Join(Config.Path, username, fh.Filename))
+		if err != nil {
+			fmt.Fprintln(response, "Something went wrong!")
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
+		defer output.Close()
+
+		_, err = io.Copy(output, f)
+		if err != nil {
+			fmt.Fprintln(response, err)
+			fmt.Fprintln(os.Stderr, err)
+		}
+
+		fmt.Println("Uploaded file:", fh.Filename)
+		http.Redirect(response, request, "/userspace", 302)
+	}
 }
 
 // staticHandler takes care of images and other static files
