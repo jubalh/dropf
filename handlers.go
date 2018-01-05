@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -220,7 +221,12 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 			http.Redirect(response, request, "/", 404)
 		}
 	} else if strings.Contains(request.URL.Path, "/file/delete/") {
-		file := request.URL.String()[13:]
+		file, err := url.PathUnescape(request.URL.String()[13:])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error unescaping string: ")
+			fmt.Fprintln(os.Stderr, err)
+		}
+		fmt.Println("file", file)
 		fmt.Println(file)
 
 		os.Remove("files/" + file)
