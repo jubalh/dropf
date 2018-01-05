@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -41,6 +42,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	port := flag.String("port", "9090", "Port to start service on")
+	flag.Parse()
+
 	// Create directory where files will be saved
 	if Config.Path == "" {
 		fmt.Println("'Path' is not defined in configuration. Fallback to 'files'")
@@ -58,7 +62,8 @@ func main() {
 	http.HandleFunc("/static/", staticHandler)
 	http.HandleFunc("/file/", fileHandler)
 
-	err = http.ListenAndServe(":9090", nil)
+	log.Println("Starting to listen on port", *port)
+	err = http.ListenAndServe(":"+*port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
