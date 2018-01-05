@@ -1,0 +1,33 @@
+.header{
+  width: 100%;
+  background-color: #E0EBF5;
+}
+
+.Content {
+  padding: 10px;
+  padding-left: 0px;
+}
+
+.leftContent {
+  /*width: 20%;   */
+  float: left;
+  margin-right: 50px;
+}
+
+.rightContent {
+  /*width: 80%;*/
+}
+
+body {
+  width: 800px;
+}
+
+button {
+  background-color: #E0EBF5;
+  border: none;
+  padding: 10px 32px;
+}
+
+#icon {
+  height: 120px;
+}

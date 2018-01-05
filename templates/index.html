@@ -1,66 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body style="width: 800px;">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    </head>
+    <body>
+        <div id="container">
+            <div class="header">
+                <h1>dropf</h1>
+            </div>
 
-  <style>
-    .header{
-      width: 100%;
-      background-color: #E0EBF5;
-    }
+            <div>
+                <div class="Content leftContent">
+                    <img id="icon" src="/static/images/dropf.png">
+                </div>
 
-    .Container {
-      padding: 10px;
-      padding-left: 0px;
-    }
+                <div class="Content rightContent">
+                    <b>Drop your files</b>
+                </div>
 
-    .leftContainer {
-      /*width: 20%;   */
-      float: left;
-      margin-right: 50px;
-    }
+                <div class="login">
+                    <form method="post" action="/login">
+                        <label for="name">Username:</label>
+                        <input type="text" id="name" name="name">
+                        </br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password">
+                        </br>
+                        </br>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
 
-    .rightContainer {
-      /*width: 80%;*/
-    }
-
-    button {
-      background-color: #E0EBF5;
-      border: none;
-      padding: 10px 32px;
-  }
-  </style>
-
-  <div class="header">
-    <h1>dropf</h1>
-  </div>
-
-  <div class="content">
-
-    <div class="Container leftContainer">
-      <img src="/static/images/dropf.png" style="height: 120px">
-    </div>
-
-    <div class="Container rightContainer">
-      <b>Drop your files</b>
-    </div>
-
-    <div class="login">
-      <form method="post" action="/login">
-        <label for="name">Username:</label>
-        <input type="text" id="name" name="name">
-        </br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password">
-        </br>
-        </br>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-
-  </div>
-
-  </body>
+            </div>
+        </div>
+    </body>
 </html>
