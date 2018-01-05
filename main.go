@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/boltdb/bolt"
 )
 
 type User struct {
@@ -49,12 +47,6 @@ func main() {
 		Config.Path = "files"
 	}
 	os.Mkdir(Config.Path, 0750)
-
-	db, err := bolt.Open("files.db", 0644, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	InitSessionStore()
 
