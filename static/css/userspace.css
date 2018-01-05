@@ -1,0 +1,57 @@
+h1 {
+	color: #375eab;
+}
+
+#file-table {
+	width: 70%;
+}
+
+#file-table td, #file-table th {
+	border: 1px solid grey;
+	padding: 8px;
+}
+
+#file-table th {
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+    background-color: #375EAB;
+	color: white;
+}
+
+#file-table tr:nth-child(even) {
+}
+
+#file-table tr:hover {
+	background-color: #8fe3e5;
+}
+
+#account-section {
+	width: 100%;
+	margin-bottom: 30px;
+	padding: 10px;
+	height: 60;
+	background-color: #1847a3;
+	color: white;
+	font-weight: bold;
+}
+
+#account-section p, #account-section form {
+	display: inline-block;
+}
+
+#account-section form {
+	float: right;
+}
+
+#account-section button {
+	margin: 10px;
+}
+
+#upload-section {
+	margin-left: 30px;
+}
+
+#files-section {
+	margin: 30px;
+}
