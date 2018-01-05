@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -200,18 +201,18 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 
 	r, err := regexp.Compile("^/file/(view|delete)/" + loggedin + "/")
 	if err != nil {
-		fmt.Println("ERROR regex: ")
+		fmt.Fprintln(os.Stderr, "ERROR regex: ", err)
 		return
 	}
 
 	if r.MatchString(request.URL.Path) == false {
-		fmt.Printf("UNAUTHORIZED: %s requires %s\n", loggedin, request.URL.Path)
+		log.Printf("UNAUTHORIZED: %s requires %s\n", loggedin, request.URL.Path)
 		// TODO redirect ?
 		http.Redirect(response, request, "/", 302)
 		return
 	}
 
-	fmt.Printf("%s requires %s\n", loggedin, request.URL.Path)
+	log.Printf("%s requires %s\n", loggedin, request.URL.Path)
 
 	if strings.Contains(request.URL.Path, "/file/view/") {
 		req := request.URL.Path[11:]
