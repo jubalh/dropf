@@ -68,11 +68,13 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 
 				http.SetCookie(response, cookie)
 				target = "/userspace"
+
+				log.Printf("Logged in as: %s (%s)", username.Name, id)
 			} else {
 				fmt.Println("Failed login for user: ", name)
 			}
 		} else {
-			fmt.Println("Failed login: ", name)
+			fmt.Println("Failed login: ", name) //TODO fix this. wants to check whether login with non existing user
 		}
 	}
 
@@ -82,6 +84,11 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)
 	if err == nil {
+		user, err := GetUsername(id)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		log.Printf("%s (%s) logs out", user, id)
 		DestroySession(id)
 	}
 	http.Redirect(response, request, "/", 302)
@@ -98,11 +105,9 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 	username, err := GetUsername(id)
 	if err != nil {
-		fmt.Println("Debug: ", err)
+		fmt.Fprintln(os.Stderr, err)
 		return
 	}
-
-	fmt.Println("Debug: Logged in as:", username)
 
 	f := []File{}
 
@@ -176,7 +181,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 // staticHandler takes care of images and other static files
 func staticHandler(response http.ResponseWriter, request *http.Request) {
 	if strings.Contains(request.URL.Path, ".png") || strings.Contains(request.URL.Path, ".css") {
-		fmt.Println(request.URL.Path[1:])
+		//fmt.Println(request.URL.Path[1:])
 		http.ServeFile(response, request, request.URL.Path[1:])
 	}
 }
@@ -187,15 +192,16 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 func fileHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)
 	if err != nil {
-		// TODO redirect ?
+		log.Printf("UNAUTHORIZED: %s requires %s\n", request.RemoteAddr, request.URL.Path)
+		fmt.Fprintln(os.Stderr, err)
 		http.Redirect(response, request, "/", 302)
-		fmt.Fprintln(response, err)
 		return
 	}
 	loggedin, err := GetUsername(id)
 	if err != nil {
-		// TODO redirect ?
-		fmt.Fprintln(response, err)
+		fmt.Println("2")
+		fmt.Fprintln(os.Stderr, err)
+		http.Redirect(response, request, "/", 302)
 		return
 	}
 
@@ -207,7 +213,6 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 
 	if r.MatchString(request.URL.Path) == false {
 		log.Printf("UNAUTHORIZED: %s requires %s\n", loggedin, request.URL.Path)
-		// TODO redirect ?
 		http.Redirect(response, request, "/", 302)
 		return
 	}
