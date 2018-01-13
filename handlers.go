@@ -71,10 +71,10 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 
 				log.Printf("Logged in as: %s (%s)", username.Name, id)
 			} else {
-				fmt.Println("Failed login for user: ", name)
+				log.Printf("Failed login for user: %s", name)
 			}
 		} else {
-			fmt.Println("Failed login: ", name) //TODO fix this. wants to check whether login with non existing user
+			log.Printf("Failed login: %s", name) //TODO fix this. wants to check whether login with non existing user
 		}
 	}
 
