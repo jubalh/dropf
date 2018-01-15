@@ -80,5 +80,6 @@ func main() {
 	}()
 
 	<-stop
+	fmt.Println()
 	log.Println("dropf stopped")
 }
