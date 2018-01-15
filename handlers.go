@@ -1,4 +1,4 @@
-// handlers.go contains all the HTTP handlers for dropf
+// handlers.go contains all the HTTP handlers for dropf.
 package main
 
 import (
@@ -15,15 +15,15 @@ import (
 	"strings"
 )
 
-// Hols information about the uploaded files
+// File holds information about the uploaded files.
 type File struct {
 	Name    string
 	Size    int64
 	ModTime string
 }
 
-// A Filler type to fill in the template.
-// It holds the infos that one wants in the userspace
+// Filler is a type to fill in the template.
+// It holds the infos that one wants in the userspace.
 type Filler struct {
 	Username string
 	Files    []File
@@ -81,6 +81,7 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, target, 302)
 }
 
+// logoutHandler logs the user out and destroys the cookie.
 func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)
 	if err == nil {
@@ -94,7 +95,7 @@ func logoutHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, "/", 302)
 }
 
-// userspaceHandler shows the users private home area.
+// userspaceHandler shows the users private home area (userspace).
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 	id, err := GetSessionId(request)
 	if err != nil {
@@ -178,7 +179,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 	http.Redirect(response, request, "/userspace", 302)
 }
 
-// staticHandler takes care of images and other static files
+// staticHandler takes care of images and other static files.
 func staticHandler(response http.ResponseWriter, request *http.Request) {
 	if strings.Contains(request.URL.Path, ".png") || strings.Contains(request.URL.Path, ".css") {
 		//fmt.Println(request.URL.Path[1:])
@@ -186,7 +187,7 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 	}
 }
 
-// fileHandler takes care of getting/viewing or deleting a file
+// fileHandler takes care of getting/viewing or deleting a file.
 // View request: /file/view/username/filename
 // Delete request: /file/delete/username/filename
 func fileHandler(response http.ResponseWriter, request *http.Request) {

@@ -9,16 +9,21 @@ import (
 	"os"
 )
 
+// User holds information of the username and the password.
+// Both are stored in plain text in the config.json file.
 type User struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 }
 
+// Config holds information about the content of the config.json file.
+// Path is the path to where the files are stored.
 var Config struct {
 	Path  string `json:"path"`
 	Users []User `json:"users"`
 }
 
+// readConfig reads the config.json file into the structs.
 func readConfig() error {
 	f, err := os.Open("config.json")
 	if err != nil {
