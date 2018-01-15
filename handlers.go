@@ -114,7 +114,7 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 	files, err := ioutil.ReadDir(filepath.Join(Config.Path, username))
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "User does not have uploaded any files yet")
+		fmt.Printf("User %s did not upload any files yet", username)
 	}
 
 	for _, file := range files {
