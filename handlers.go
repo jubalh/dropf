@@ -89,7 +89,7 @@ func logoutHandler(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		log.Printf("%s (%s) logs out", user, id)
+		log.Printf("%s (%s) logged out", user, id)
 		DestroySession(id)
 	}
 	http.Redirect(response, request, "/", 302)
@@ -174,7 +174,7 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 
-		fmt.Println("Uploaded file:", fh.Filename)
+		log.Printf("Uploaded file: %s by %s", fh.Filename, username)
 	}
 	http.Redirect(response, request, "/userspace", 302)
 }
@@ -198,7 +198,7 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 		http.Redirect(response, request, "/", 302)
 		return
 	}
-	loggedin, err := GetUsername(id)
+	username, err := GetUsername(id)
 	if err != nil {
 		fmt.Println("2")
 		fmt.Fprintln(os.Stderr, err)
@@ -206,23 +206,23 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	r, err := regexp.Compile("^/file/(view|delete)/" + loggedin + "/")
+	r, err := regexp.Compile("^/file/(view|delete)/" + username + "/")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "ERROR regex: ", err)
 		return
 	}
 
 	if r.MatchString(request.URL.Path) == false {
-		log.Printf("UNAUTHORIZED: %s requires %s\n", loggedin, request.URL.Path)
+		log.Printf("UNAUTHORIZED: %s requires %s\n", username, request.URL.Path)
 		http.Redirect(response, request, "/", 302)
 		return
 	}
 
-	log.Printf("%s requires %s\n", loggedin, request.URL.Path)
-
 	if strings.Contains(request.URL.Path, "/file/view/") {
+		log.Printf("%s requires %s\n", username, request.URL.Path)
+
 		req := request.URL.Path[11:]
-		if strings.Compare(req[0:len(loggedin)+1], loggedin+"/") == 0 {
+		if strings.Compare(req[0:len(username)+1], username+"/") == 0 {
 			http.ServeFile(response, request, "files/"+req)
 		} else {
 			http.Redirect(response, request, "/", 404)
@@ -230,13 +230,14 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 	} else if strings.Contains(request.URL.Path, "/file/delete/") {
 		file, err := url.PathUnescape(request.URL.String()[13:])
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "Error unescaping string: ")
-			fmt.Fprintln(os.Stderr, err)
+			fmt.Fprintf(os.Stderr, "Error unescaping string: %s", err)
 		}
-		fmt.Println("file", file)
-		fmt.Println(file)
+		log.Printf("Deleted file: %s by %s", file, username)
 
-		os.Remove("files/" + file)
+		err = os.Remove("files/" + file)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error removing files: %s", err)
+		}
 
 		http.Redirect(response, request, "/userspace", 302)
 	}
