@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 )
 
 // User holds information of the username and the password.
@@ -67,9 +68,17 @@ func main() {
 	http.HandleFunc("/static/", staticHandler)
 	http.HandleFunc("/file/", fileHandler)
 
-	log.Println("Starting to listen on port", *port)
-	err = http.ListenAndServe(":"+*port, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+
+	go func() {
+		log.Println("Starting to listen on port", *port)
+		err = http.ListenAndServe(":"+*port, nil)
+		if err != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
+	}()
+
+	<-stop
+	log.Println("dropf stopped")
 }
