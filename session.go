@@ -8,8 +8,10 @@ import (
 	"net/http"
 )
 
+// SessionStore stores a session, mapping ID and username.
 var SessionStore map[string]string
 
+// CookieName is the name our cookie will have
 const CookieName string = "dropf"
 
 // InitSessionStore initializes the store of the cookies.
@@ -28,7 +30,7 @@ func CreateSession(username string) (id string) {
 	return id
 }
 
-// DestroySessions destroys a session given a session ID.
+// DestroySession destroys a session given a session ID.
 func DestroySession(id string) {
 	delete(SessionStore, id)
 }
@@ -37,13 +39,12 @@ func DestroySession(id string) {
 func GetUsername(id string) (string, error) {
 	if SessionStore[id] == "" {
 		return "", errors.New("No user for ID")
-	} else {
-		return SessionStore[id], nil
 	}
+	return SessionStore[id], nil
 }
 
-// GetSessionId returns a sessions ID.
-func GetSessionId(r *http.Request) (id string, err error) {
+// GetSessionID returns a sessions ID.
+func GetSessionID(r *http.Request) (id string, err error) {
 	cookie, err := r.Cookie(CookieName)
 	if err != nil {
 		return "", fmt.Errorf("No cookie named: %s", CookieName)

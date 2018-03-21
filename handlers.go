@@ -31,7 +31,7 @@ type Filler struct {
 
 // executeTemplate loads a basic HTML file and writes it to a writer.
 // Which usually should be a http.ResponseWriter.
-func executeTemplate(templateName string, writer http.ResponseWriter, filler *Filler) {
+func executeTemplate(templateName string, writer io.Writer, filler *Filler) {
 	t, err := template.ParseFiles("templates/" + templateName)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -42,7 +42,7 @@ func executeTemplate(templateName string, writer http.ResponseWriter, filler *Fi
 
 // indexHandler serves the index Page where a user can login.
 func indexHandler(response http.ResponseWriter, request *http.Request) {
-	_, err := GetSessionId(request)
+	_, err := GetSessionID(request)
 	if err == nil {
 		http.Redirect(response, request, "/userspace", 302)
 		return
@@ -83,7 +83,7 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 
 // logoutHandler logs the user out and destroys the cookie.
 func logoutHandler(response http.ResponseWriter, request *http.Request) {
-	id, err := GetSessionId(request)
+	id, err := GetSessionID(request)
 	if err == nil {
 		user, err := GetUsername(id)
 		if err != nil {
@@ -97,7 +97,7 @@ func logoutHandler(response http.ResponseWriter, request *http.Request) {
 
 // userspaceHandler shows the users private home area (userspace).
 func userspaceHandler(response http.ResponseWriter, request *http.Request) {
-	id, err := GetSessionId(request)
+	id, err := GetSessionID(request)
 	if err != nil {
 		fmt.Println("Debug: not logged in")
 		http.Redirect(response, request, "/", 302)
@@ -129,7 +129,7 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 // uploadHandler uploads the file.
 func uploadHandler(response http.ResponseWriter, request *http.Request) {
-	id, err := GetSessionId(request)
+	id, err := GetSessionID(request)
 	if err != nil {
 		http.Redirect(response, request, "/", 302)
 		return
@@ -146,7 +146,10 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	os.Mkdir(filepath.Join(Config.Path, username), 0750)
+	err = os.Mkdir(filepath.Join(Config.Path, username), 0750)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 
 	request.ParseMultipartForm(32 << 20)
 
@@ -191,7 +194,7 @@ func staticHandler(response http.ResponseWriter, request *http.Request) {
 // View request: /file/view/username/filename
 // Delete request: /file/delete/username/filename
 func fileHandler(response http.ResponseWriter, request *http.Request) {
-	id, err := GetSessionId(request)
+	id, err := GetSessionID(request)
 	if err != nil {
 		log.Printf("UNAUTHORIZED: %s requires %s\n", request.RemoteAddr, request.URL.Path)
 		fmt.Fprintln(os.Stderr, err)
