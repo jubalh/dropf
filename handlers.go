@@ -37,7 +37,10 @@ func executeTemplate(templateName string, writer io.Writer, filler *Filler) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	t.Execute(writer, filler)
+	err = t.Execute(writer, filler)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 }
 
 // indexHandler serves the index Page where a user can login.
@@ -151,7 +154,10 @@ func uploadHandler(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	request.ParseMultipartForm(32 << 20)
+	err = request.ParseMultipartForm(32 << 20)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 
 	for _, fh := range request.MultipartForm.File["ufiles"] {
 		f, err := fh.Open()
@@ -215,7 +221,7 @@ func fileHandler(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if r.MatchString(request.URL.Path) == false {
+	if !r.MatchString(request.URL.Path) {
 		log.Printf("UNAUTHORIZED: %s requires %s\n", username, request.URL.Path)
 		http.Redirect(response, request, "/", 302)
 		return

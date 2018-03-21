@@ -56,7 +56,12 @@ func main() {
 		fmt.Println("'Path' is not defined in configuration. Fallback to 'files'")
 		Config.Path = "files"
 	}
-	os.Mkdir(Config.Path, 0750)
+
+	err = os.Mkdir(Config.Path, 0750)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Can notnot create directory: ", err)
+		os.Exit(1)
+	}
 
 	InitSessionStore()
 
