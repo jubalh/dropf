@@ -59,7 +59,7 @@ func main() {
 
 	err = os.Mkdir(Config.Path, 0750)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Can notnot create directory: ", err)
+		fmt.Fprintln(os.Stderr, "Can not create directory: ", err)
 		os.Exit(1)
 	}
 
