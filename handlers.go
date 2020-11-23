@@ -72,12 +72,12 @@ func loginHandler(response http.ResponseWriter, request *http.Request) {
 				http.SetCookie(response, cookie)
 				target = "/userspace"
 
-				log.Printf("Logged in as: %s (%s)", username.Name, id)
+				log.Printf("Logged in as: %s (%s)\n", username.Name, id)
 			} else {
-				log.Printf("Failed login for user: %s", name)
+				log.Printf("Failed login for user: %s\n", name)
 			}
 		} else {
-			log.Printf("Failed login: %s", name) //TODO fix this. wants to check whether login with non existing user
+			log.Printf("Failed login: %s\n", name) //TODO fix this. wants to check whether login with non existing user
 		}
 	}
 
@@ -92,7 +92,7 @@ func logoutHandler(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		log.Printf("%s (%s) logged out", user, id)
+		log.Printf("%s (%s) logged out\n", user, id)
 		DestroySession(id)
 	}
 	http.Redirect(response, request, "/", 302)
@@ -117,7 +117,7 @@ func userspaceHandler(response http.ResponseWriter, request *http.Request) {
 
 	files, err := ioutil.ReadDir(filepath.Join(Config.Path, username))
 	if err != nil {
-		fmt.Printf("User %s did not upload any files yet", username)
+		fmt.Printf("User %s did not upload any files yet\n", username)
 	}
 
 	for _, file := range files {
