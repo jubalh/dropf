@@ -57,7 +57,7 @@ func main() {
 		Config.Path = "files"
 	}
 
-	err = os.Mkdir(Config.Path, 0750)
+	err = os.MkdirAll(Config.Path, 0750)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Can not create directory: ", err)
 		os.Exit(1)
