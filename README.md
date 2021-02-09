@@ -26,3 +26,7 @@ Use the example `config.json` and place it next to the binary. Edit it to add us
 Place the `static` and `templates` directories next to the binary.
 Then run it.
 
+## Screenshots
+
+<img src="https://raw.githubusercontent.com/jubalh/dropf/master/screenshots/dropf-1.png">
+<img src="https://raw.githubusercontent.com/jubalh/dropf/master/screenshots/dropf-2.png">
